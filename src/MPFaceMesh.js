@@ -1,19 +1,42 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
 import {
   FaceMesh,
-  FACEMESH_TESSELATION,
-  FACEMESH_RIGHT_EYE,
-  FACEMESH_RIGHT_EYEBROW,
-  FACEMESH_LEFT_EYE,
-  FACEMESH_LEFT_EYEBROW,
-  FACEMESH_FACE_OVAL,
-  FACEMESH_LIPS,
+  FACEMESH_FACE_OVAL
 } from "@mediapipe/face_mesh/face_mesh";
 import { drawConnectors } from "@mediapipe/drawing_utils/drawing_utils";
 import { Camera } from "@mediapipe/camera_utils/camera_utils";
 
+import Card from 'react-bootstrap/Card'
+import ScreenSize from "./components/SceenSize";
+
+
 const MPFaceMesh = () => {
+
+  const [windowDimenion, detectHW] = useState({
+    winWidth: window.innerWidth,
+    winHeight: window.innerHeight,
+  })
+
+  const [left_coordx, setLeft_]
+
+  const detectSize = () => {
+    detectHW({
+      winWidth: window.innerWidth,
+      winHeight: window.innerHeight,
+    })
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', detectSize)
+
+    return () => {
+      window.removeEventListener('resize', detectSize)
+    }
+  }, [windowDimenion])
+
+
+
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
 
@@ -66,66 +89,68 @@ const MPFaceMesh = () => {
     );
     if (results.multiFaceLandmarks) {
       console.log('Found face');
-      for (const landmarks of results.multiFaceLandmarks) {
-        drawConnectors(canvasCtx, landmarks, FACEMESH_TESSELATION, {
-          color: "#C0C0C070",
-          lineWidth: 1,
-        });
-        drawConnectors(canvasCtx, landmarks, FACEMESH_RIGHT_EYE, {
-          color: "#FF3030",
-        });
-        drawConnectors(canvasCtx, landmarks, FACEMESH_RIGHT_EYEBROW, {
-          color: "#FF3030",
-        });
-        drawConnectors(canvasCtx, landmarks, FACEMESH_LEFT_EYE, {
-          color: "#30FF30",
-        });
-        drawConnectors(canvasCtx, landmarks, FACEMESH_LEFT_EYEBROW, {
-          color: "#30FF30",
-        });
+
+      for (const landmarks of results.multiFaceLandmarks){
+        //results.multiFaceLandmarks contains the landmarks for each face
+        // Landmark 226 and 446 used as right and left respectively
+
+        console.log(`left point: ${landmarks[226].x}`);
+        console.log(`right point: ${landmarks[446].x}`);
+
         drawConnectors(canvasCtx, landmarks, FACEMESH_FACE_OVAL, {
           color: "#E0E0E0",
         });
-        drawConnectors(canvasCtx, landmarks, FACEMESH_LIPS, {
-          color: "#E0E0E0",
-        });
       }
+
+    }else{
+      console.log("Face not found in frame")
     }
     canvasCtx.restore();
   };
 
   return (
     <div>
-      <Webcam
-        audio={false}
-        mirrored={true}
-        ref={webcamRef}
-        style={{
-          position: "absolute",
-          marginLeft: "auto",
-          marginRight: "auto",
-          left: "0",
-          right: "0",
-          textAlign: "center",
-          zindex: 9,
-          width: 1280,
-          height: 720,
-        }}
-      />
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: "absolute",
-          marginLeft: "auto",
-          marginRight: "auto",
-          left: "0",
-          right: "0",
-          textAlign: "center",
-          zindex: 9,
-          width: 1280,
-          height: 720,
-        }}
-      ></canvas>
+      <Card>
+        <div>
+          <Webcam
+            audio={false}
+            mirrored={true}
+            ref={webcamRef}
+            style={{
+              position: "absolute",
+              marginLeft: "auto",
+              marginRight: "auto",
+              left: "0",
+              right: "0",
+              textAlign: "center",
+              zindex: 9,
+              // width: windowDimenion.winWidth,
+              height: windowDimenion.winHeight *.7,
+            }}
+          />
+          <canvas
+            ref={canvasRef}
+            style={{
+              position: "absolute",
+              marginLeft: "auto",
+              marginRight: "auto",
+              left: "0",
+              right: "0",
+              textAlign: "center",
+              zindex: 9,
+              // width: windowDimenion.winWidth,
+              height: windowDimenion.winHeight *.7,
+            }}
+          ></canvas>
+        </div>
+      </Card>
+      <div>
+        <Card>
+          <Card.Body>{}</Card.Body>
+        </Card>
+        <h1 id="left_coordy"> jet</h1>
+        <h1 id="left_coordx">"hey</h1>
+      </div>
     </div>
   );
 };

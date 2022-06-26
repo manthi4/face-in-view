@@ -1,3 +1,9 @@
+#Face in View
+Actual landmark locations and indexes from blazeface model (used in MediaPipe FaceMesh):
+https://github.com/google/mediapipe/blob/a908d668c730da128dfa8d9f6bd25d519d006692/mediapipe/modules/face_geometry/data/canonical_face_model_uv_visualization.png
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
